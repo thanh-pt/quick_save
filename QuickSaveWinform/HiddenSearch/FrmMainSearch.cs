@@ -10,12 +10,12 @@ namespace HiddenSearch
 {
     public partial class FrmMainSearch : Form
     {
-        double FG_OPACITY = 0.3;
-        double BG_OPACITY = 0.05;
-        string DB_FILE_NAME = "quiz.xlsx";
+        private delegate void updateDataDelegate(string standFor = "", string definiation = "", string howItWork = "");
 
-        List<HandbookObject> lstHandbookObj;
-        Dictionary<string, HandbookObject> dicSearching = new Dictionary<string, HandbookObject>();
+        public ConfigurationData ConfigData = new ConfigurationData();
+
+        List<HandbookObject> m_lstHandbookObj;
+        Dictionary<string, HandbookObject> m_dicSearching = new Dictionary<string, HandbookObject>();
 
         public FrmMainSearch()
         {
@@ -26,29 +26,40 @@ namespace HiddenSearch
 
         private void updateData(string standFor="", string definiation="", string howItWork="")
         {
-            if (howItWork == "")
+            if (this.InvokeRequired)
             {
-                txtHowItWork.Height = 0;
-            } else
-            {
-                txtHowItWork.Height = 80;
+                this.Invoke(new updateDataDelegate
+                (updateData),
+                new object[] { standFor, definiation, howItWork});
             }
+            else
+            {
+                if (howItWork == "")
+                {
+                    txtHowItWork.Height = 0;
+                } else
+                {
+                    txtHowItWork.Height = 80;
+                }
 
-            txtStandFor.Text = standFor;
-            txtDefinition.Text = definiation;
-            txtHowItWork.Text = howItWork;
+                txtStandFor.Text = standFor;
+                txtDefinition.Text = definiation;
+                txtHowItWork.Text = howItWork;
+            }
         }
 
         private void readingDb()
         {
-            FileInfo quizInfo = new FileInfo(DB_FILE_NAME);
+            updateData("Reading DB...");
+            FileInfo quizInfo = new FileInfo(ConfigData.DataFileName);
             if (!quizInfo.Exists)
             {
-                MessageBox.Show("Cannot find 'quiz.xlsx'!");
+                updateData("Cannot find DB!");
                 return;
             }
-            lstHandbookObj = ExcelReading.getExcelFile(quizInfo.FullName);
-            foreach (HandbookObject handbookObj in lstHandbookObj)
+            m_dicSearching.Clear();
+            m_lstHandbookObj = ExcelReading.getExcelFile(quizInfo.FullName);
+            foreach (HandbookObject handbookObj in m_lstHandbookObj)
             {
                 string lowerKeyword = handbookObj.Keyword.ToLower();
                 if (lowerKeyword.Contains("/"))
@@ -56,17 +67,18 @@ namespace HiddenSearch
                     List<string> subKey = lowerKeyword.Split('/').ToList();
                     foreach (string key in subKey)
                     {
-                        dicSearching.Add(key.Trim(), handbookObj);
+                        m_dicSearching.Add(key.Trim(), handbookObj);
                     }
                 }
-                if (dicSearching.ContainsKey(lowerKeyword))
+                if (m_dicSearching.ContainsKey(lowerKeyword))
                 {
-                    dicSearching[lowerKeyword] = handbookObj;
+                    m_dicSearching[lowerKeyword] = handbookObj;
                 } else
                 {
-                    dicSearching.Add(lowerKeyword, handbookObj);
+                    m_dicSearching.Add(lowerKeyword, handbookObj);
                 }
             }
+            updateData("Ready to use!");
         }
 
         private HandbookObject searching(string keyword)
@@ -74,23 +86,29 @@ namespace HiddenSearch
             HandbookObject result = null;
             try
             {
-                result = dicSearching[keyword];
+                result = m_dicSearching[keyword];
             } catch { }
             return result;
+        }
+
+        public void reloadDataBase()
+        {
+            Thread tReadingDb = new Thread(new ThreadStart(readingDb));
+            tReadingDb.Start();
         }
 
         #endregion
 
         private void FrmMainSearch_Activated(object sender, EventArgs e)
         {
-            this.Opacity = FG_OPACITY;
+            this.Opacity = ConfigData.ActiveOpacity;
             mainPanel.Visible = true;
             txtKeyword.Focus();
         }
 
         private void FrmMainSearch_Deactivate(object sender, EventArgs e)
         {
-            this.Opacity = BG_OPACITY;
+            this.Opacity = ConfigData.DeactiveOpacity;
             mainPanel.Visible = false;
         }
 
@@ -106,9 +124,9 @@ namespace HiddenSearch
                 updateData(searchResult.StandFor,
                     searchResult.Definition,
                     searchResult.HowToUse);
-            } else if (dicSearching.Count == 0)
+            } else if (m_dicSearching.Count == 0)
             {
-                updateData("Loading dict...");
+                updateData("Dict empty!!!");
             } else
             {
                 updateData("Cannot found!!!");
@@ -138,10 +156,8 @@ namespace HiddenSearch
 
         private void FrmMainSearch_Shown(object sender, EventArgs e)
         {
-            this.Opacity = FG_OPACITY;
             updateData();
-            Thread tReadingDb = new Thread(new ThreadStart(readingDb));
-            tReadingDb.Start();
+            reloadDataBase();
         }
 
         private void btnShowMore_Click(object sender, EventArgs e)
@@ -157,6 +173,12 @@ namespace HiddenSearch
                 btnConfig.Visible = false;
                 btnClose.Visible = false;
             }
+        }
+
+        private void btnConfig_Click(object sender, EventArgs e)
+        {
+            Configuration config = new Configuration(this);
+            config.ShowDialog();
         }
     }
 }

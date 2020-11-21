@@ -143,6 +143,7 @@
             this.btnConfig.Text = "❖";
             this.btnConfig.UseVisualStyleBackColor = true;
             this.btnConfig.Visible = false;
+            this.btnConfig.Click += new System.EventHandler(this.btnConfig_Click);
             // 
             // btnShowMore
             // 
@@ -164,9 +165,11 @@
             this.Controls.Add(this.mainPanel);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
+            this.MinimumSize = new System.Drawing.Size(300, 300);
             this.Name = "FrmMainSearch";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = " ";
             this.TopMost = true;
             this.Activated += new System.EventHandler(this.FrmMainSearch_Activated);
