@@ -12,10 +12,10 @@ namespace HiddenSearch
     {
         private delegate void updateDataDelegate(string standFor = "", string definiation = "", string howItWork = "");
 
-        public ConfigurationData ConfigData = new ConfigurationData();
+        public ConfigInfo ConfigData = new ConfigInfo();
 
-        List<HandbookObject> m_lstHandbookObj;
-        Dictionary<string, HandbookObject> m_dicSearching = new Dictionary<string, HandbookObject>();
+        List<HandbookInfo> m_lstHandbookObj;
+        Dictionary<string, HandbookInfo> m_dicSearching = new Dictionary<string, HandbookInfo>();
 
         public FrmMainSearch()
         {
@@ -59,7 +59,7 @@ namespace HiddenSearch
             }
             m_dicSearching.Clear();
             m_lstHandbookObj = ExcelReading.getExcelFile(quizInfo.FullName);
-            foreach (HandbookObject handbookObj in m_lstHandbookObj)
+            foreach (HandbookInfo handbookObj in m_lstHandbookObj)
             {
                 string lowerKeyword = handbookObj.Keyword.ToLower();
                 if (lowerKeyword.Contains("/"))
@@ -81,9 +81,9 @@ namespace HiddenSearch
             updateData("Ready to use!");
         }
 
-        private HandbookObject searching(string keyword)
+        private HandbookInfo searching(string keyword)
         {
-            HandbookObject result = null;
+            HandbookInfo result = null;
             try
             {
                 result = m_dicSearching[keyword];
@@ -114,7 +114,7 @@ namespace HiddenSearch
 
         private void btnSearch_Click(object sender, EventArgs e)
         {
-            HandbookObject searchResult = searching(txtKeyword.Text.ToLower());
+            HandbookInfo searchResult = searching(txtKeyword.Text.ToLower());
             if (searchResult != null)
             {
                 if (txtKeyword.Text.ToLower() != searchResult.Keyword.ToLower())
@@ -177,7 +177,7 @@ namespace HiddenSearch
 
         private void btnConfig_Click(object sender, EventArgs e)
         {
-            Configuration config = new Configuration(this);
+            FrmConfiguration config = new FrmConfiguration(this);
             config.ShowDialog();
         }
     }

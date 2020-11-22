@@ -1,12 +1,12 @@
 ﻿namespace HiddenSearch
 {
-    class HandbookObject
+    class HandbookInfo
     {
         public string Keyword { get; set; }
         public string StandFor { get; set; }
         public string Definition { get; set; }
         public string HowToUse { get; set; }
-        public HandbookObject(string keyword = "", string standFor = "", string definition = "", string howToUse = "")
+        public HandbookInfo(string keyword = "", string standFor = "", string definition = "", string howToUse = "")
         {
             Keyword = keyword;
             StandFor = standFor;

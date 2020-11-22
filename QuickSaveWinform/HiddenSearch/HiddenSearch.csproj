@@ -64,13 +64,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Configuration.cs">
+    <Compile Include="FrmConfiguration.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Configuration.Designer.cs">
-      <DependentUpon>Configuration.cs</DependentUpon>
+    <Compile Include="FrmConfiguration.Designer.cs">
+      <DependentUpon>FrmConfiguration.cs</DependentUpon>
     </Compile>
-    <Compile Include="ConfigurationData.cs" />
+    <Compile Include="ConfigInfo.cs" />
     <Compile Include="ExcelReading.cs" />
     <Compile Include="FrmMainSearch.cs">
       <SubType>Form</SubType>
@@ -78,11 +78,11 @@
     <Compile Include="FrmMainSearch.Designer.cs">
       <DependentUpon>FrmMainSearch.cs</DependentUpon>
     </Compile>
-    <Compile Include="HandbookObject.cs" />
+    <Compile Include="HandbookInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Configuration.resx">
-      <DependentUpon>Configuration.cs</DependentUpon>
+    <EmbeddedResource Include="FrmConfiguration.resx">
+      <DependentUpon>FrmConfiguration.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FrmMainSearch.resx">
       <DependentUpon>FrmMainSearch.cs</DependentUpon>

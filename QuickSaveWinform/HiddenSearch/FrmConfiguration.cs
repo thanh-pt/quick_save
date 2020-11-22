@@ -10,10 +10,10 @@ using System.Windows.Forms;
 
 namespace HiddenSearch
 {
-    public partial class Configuration : Form
+    public partial class FrmConfiguration : Form
     {
         FrmMainSearch mainSearch;
-        public Configuration(FrmMainSearch parent)
+        public FrmConfiguration(FrmMainSearch parent)
         {
             InitializeComponent();
             mainSearch = parent;

@@ -17,9 +17,9 @@ namespace HiddenSearch
             return str;
         }
 
-        public static List<HandbookObject> getExcelFile(string fileName)
+        public static List<HandbookInfo> getExcelFile(string fileName)
         {
-            List<HandbookObject> lstHandbookObj = new List<HandbookObject>();
+            List<HandbookInfo> lstHandbookObj = new List<HandbookInfo>();
 
             //Create COM Objects. Create a COM object for everything that is referenced
             Excel.Application xlApp = new Excel.Application();
@@ -57,7 +57,7 @@ namespace HiddenSearch
                     howToUse = verifyString(xlRange.Cells[i, 7].Value2.ToString());
                 }
                 catch { }
-                HandbookObject handbookObj = new HandbookObject(keyword, standFor, definition, howToUse);
+                HandbookInfo handbookObj = new HandbookInfo(keyword, standFor, definition, howToUse);
                 lstHandbookObj.Add(handbookObj);
             }
 
