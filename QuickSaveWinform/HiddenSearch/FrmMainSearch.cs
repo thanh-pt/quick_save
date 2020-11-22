@@ -14,6 +14,8 @@ namespace HiddenSearch
 
         public ConfigInfo ConfigData = new ConfigInfo();
 
+        int m_lastWidth = 300;
+        int m_lastHeigh = 325;
         List<HandbookInfo> m_lstHandbookObj;
         Dictionary<string, HandbookInfo> m_dicSearching = new Dictionary<string, HandbookInfo>();
 
@@ -34,14 +36,6 @@ namespace HiddenSearch
             }
             else
             {
-                if (howItWork == "")
-                {
-                    txtHowItWork.Height = 0;
-                } else
-                {
-                    txtHowItWork.Height = 80;
-                }
-
                 txtStandFor.Text = standFor;
                 txtDefinition.Text = definiation;
                 txtHowItWork.Text = howItWork;
@@ -97,6 +91,15 @@ namespace HiddenSearch
             tReadingDb.Start();
         }
 
+        private void adaptiveApplicationHeigh()
+        {
+            this.Height = 40 
+                        + txtKeyword.Height
+                        + (txtStandFor.Visible ? txtStandFor.Height : 0)
+                        + (txtDefinition.Visible ? 175 : 0)
+                        + (txtHowItWork.Visible ? txtHowItWork.Height : 0);
+        }
+
         #endregion
 
         private void FrmMainSearch_Activated(object sender, EventArgs e)
@@ -104,12 +107,18 @@ namespace HiddenSearch
             this.Opacity = ConfigData.ActiveOpacity;
             mainPanel.Visible = true;
             txtKeyword.Focus();
+            this.Width = m_lastWidth;
+            this.Height = m_lastHeigh;
         }
 
         private void FrmMainSearch_Deactivate(object sender, EventArgs e)
         {
             this.Opacity = ConfigData.DeactiveOpacity;
             mainPanel.Visible = false;
+            m_lastWidth = this.Width;
+            m_lastHeigh = this.Height;
+            this.Width = 0;
+            this.Height = 0;
         }
 
         private void btnSearch_Click(object sender, EventArgs e)
@@ -179,6 +188,31 @@ namespace HiddenSearch
         {
             FrmConfiguration config = new FrmConfiguration(this);
             config.ShowDialog();
+        }
+
+        private void txtHowItWork_TextChanged(object sender, EventArgs e)
+        {
+            if (txtHowItWork.Text.Length == 0)
+            {
+                txtHowItWork.Visible = false;
+            } else
+            {
+                txtHowItWork.Visible = true;
+            }
+            adaptiveApplicationHeigh();
+        }
+
+        private void txtDefinition_TextChanged(object sender, EventArgs e)
+        {
+            if(txtDefinition.Text.Length == 0)
+            {
+                txtDefinition.Visible = false;
+            } else
+            {
+                txtDefinition.Visible = true;
+                txtDefinition.BringToFront();
+            }
+            adaptiveApplicationHeigh();
         }
     }
 }
